@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary batch files
+batch_*.json
+upload_batch_*.json
+collect_files.cjs
+read_upload_batches.cjs
+rebatch_files.cjs
+skipped_files.txt
