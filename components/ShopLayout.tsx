@@ -118,9 +118,9 @@ export const ShopLayout = () => {
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/shop/dashboard', show: userSession?.permissions?.canViewDashboard ?? true },
-    { icon: Calendar, label: 'Agenda', path: '/shop/calendar', show: true },
+    { icon: Calendar, label: 'Agenda', path: '/shop/calendar', show: true }, // Always show calendar (professionals need to see their schedule)
     { icon: Scissors, label: 'Serviços', path: '/shop/services', show: userSession?.permissions?.canManageServices ?? true },
-    { icon: Users, label: 'Profissionais', path: '/shop/professionals', show: userSession?.type === 'shopkeeper' },
+    { icon: Users, label: 'Profissionais', path: '/shop/professionals', show: userSession?.type === 'shopkeeper' }, // Only shopkeeper manages professionals
     { icon: Clock, label: 'Horários', path: '/shop/hours', show: userSession?.type === 'shopkeeper' },
     { icon: DollarSign, label: 'Pagamentos', path: '/shop/payments', show: userSession?.type === 'shopkeeper' },
     { icon: BarChart2, label: 'Relatórios', path: '/shop/reports', show: userSession?.type === 'shopkeeper' },
@@ -128,6 +128,7 @@ export const ShopLayout = () => {
     { icon: Settings, label: 'Configurações', path: '/shop/settings', show: userSession?.type === 'shopkeeper' },
   ];
 
+  /* --- IMPERSONATION LOGIC --- */
   const handleExitImpersonation = () => {
     localStorage.removeItem('user_session');
     navigate(userSession?.adminReturnUrl || '/stores');
@@ -135,6 +136,7 @@ export const ShopLayout = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
+      {/* Banner de Modo Admin (Impersonate) */}
       {userSession?.isImpersonated && (
         <div className="bg-orange-600 text-white px-4 py-2 flex justify-between items-center shadow-md z-[60]">
           <div className="flex items-center gap-2">
@@ -151,6 +153,7 @@ export const ShopLayout = () => {
         </div>
       )}
 
+      {/* Main Layout Content */}
       <div className="flex flex-1 overflow-hidden relative">
         <aside
           className={`fixed lg:static inset-y-0 left-0 z-50 transition-all duration-300 flex flex-col 
@@ -158,6 +161,7 @@ export const ShopLayout = () => {
         ${isSidebarCollapsed ? 'w-20' : 'w-64'}
         bg-[#0f172a] text-slate-200 border-r border-slate-800 shadow-sm relative`}
         >
+          {/* Toggle Button */}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className="hidden lg:flex absolute -right-3 top-8 bg-slate-800 text-slate-400 hover:text-white p-1 rounded-full shadow-md border border-slate-700 z-50 transition-colors"
@@ -199,6 +203,7 @@ export const ShopLayout = () => {
                   <item.icon size={20} className={`shrink-0 ${isSidebarCollapsed ? '' : ''}`} />
                   {!isSidebarCollapsed && <span className="whitespace-nowrap overflow-hidden">{item.label}</span>}
 
+                  {/* Tooltip for collapsed state */}
                   {isSidebarCollapsed && (
                     <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
                       {item.label}
@@ -209,6 +214,7 @@ export const ShopLayout = () => {
             </nav>
 
             <div className={`p-3 space-y-1 mt-auto ${isSidebarCollapsed ? 'px-2' : ''}`}>
+              {/* Divider */}
               <div className="h-px bg-slate-700/50 my-2 mx-2"></div>
 
               <NavLink
@@ -255,7 +261,9 @@ export const ShopLayout = () => {
             </div>
           </header>
 
+
           <main className="flex-1 overflow-y-auto">
+            {/* Expiration Notification Banner */}
             {expirationWarning && (
               <div className="sticky top-0 z-40 bg-secondary/90 backdrop-blur-md text-white px-6 py-3 shadow-lg flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -282,6 +290,7 @@ export const ShopLayout = () => {
             )}
 
             <div className="hidden lg:flex justify-end items-center gap-3 p-4 h-20 border-b border-border bg-background sticky top-0 z-10">
+              {/* Ver Loja Button */}
               <button
                 onClick={() => navigate(userSession?.storeId ? `/client/${userSession.storeId}` : '/client')}
                 className="flex items-center gap-2 bg-surface hover:bg-white/5 text-white border border-border px-4 py-2 rounded-lg font-medium text-sm transition-colors"
@@ -290,6 +299,7 @@ export const ShopLayout = () => {
                 Ver Loja
               </button>
 
+              {/* Agenda Button */}
               <button
                 onClick={() => navigate('/shop/calendar')}
                 className="flex items-center gap-2 bg-surface hover:bg-white/5 text-white border border-border px-4 py-2 rounded-lg font-medium text-sm transition-colors"
@@ -298,6 +308,7 @@ export const ShopLayout = () => {
                 Agenda
               </button>
 
+              {/* Novo Agendamento Button */}
               <button
                 onClick={() => navigate('/shop/calendar')}
                 className="flex items-center gap-2 bg-secondary hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-lg shadow-orange-900/20"
@@ -306,6 +317,7 @@ export const ShopLayout = () => {
                 Novo Agendamento
               </button>
 
+              {/* Caixa Toggle Button */}
               <button
                 onClick={handleCaixaToggle}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm text-white transition-colors ${isCaixaOpen
@@ -316,6 +328,7 @@ export const ShopLayout = () => {
                 {isCaixaOpen ? 'Caixa Aberto' : 'Caixa Fechado'}
               </button>
 
+              {/* Notifications Bell */}
               <div className="relative">
                 <button onClick={() => setIsNotificationsOpen(o => !o)} className="text-text-muted relative p-2 hover:bg-white/5 rounded-full">
                   <Bell size={22} />
@@ -328,6 +341,7 @@ export const ShopLayout = () => {
           </main>
         </div>
 
+        {/* Confirmation Modal */}
         <ConfirmationModal
           isOpen={showCaixaModal}
           title={isCaixaOpen ? 'Fechar Caixa' : 'Abrir Caixa'}
