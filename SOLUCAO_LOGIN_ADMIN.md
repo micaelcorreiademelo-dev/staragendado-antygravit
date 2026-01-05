@@ -72,7 +72,7 @@ SELECT id, email FROM auth.users WHERE email = 'admin@staragendado.com';
 --     'admin@staragendado.com',
 --     'Administrador',
 --     'admin',
---     '{"dashboard": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true, \"employees\": true}'::jsonb
+--     '{"dashboard": true, "users": true, "stores": true, "services": true, "appointments": true, "employees": true}'::jsonb
 -- );
 
 -- PASSO 5: Verificar se tudo está correto
@@ -114,7 +114,7 @@ VALUES (
     'admin@staragendado.com',
     'Administrador',
     'admin',
-    '{"dashboard": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true, \"employees\": true}'::jsonb
+    '{"dashboard": true, "users": true, "stores": true, "services": true, "appointments": true, "employees": true}'::jsonb
 )
 ON CONFLICT (id) DO UPDATE SET
     role = 'admin',
