@@ -21,12 +21,12 @@ WHERE role = 'admin' OR email LIKE '%admin%';
 --     email,
 --     COALESCE(raw_user_meta_data->>'full_name', 'Admin User'),
 --     'admin',
---     '{"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true}'::jsonb
+--     '{"dashboard": true, "users": true, "stores": true, "services": true, "appointments": true}'::jsonb
 -- FROM auth.users
 -- WHERE email = 'admin@example.com'
 -- ON CONFLICT (id) DO UPDATE SET
 --     role = 'admin',
---     permissions = '{"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true}'::jsonb;
+--     permissions = '{\"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true}'::jsonb;
 
 -- 4. Atualizar o role de todos os admins existentes
 UPDATE public.users 

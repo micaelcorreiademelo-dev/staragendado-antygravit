@@ -18,14 +18,14 @@ SELECT
     au.email,
     COALESCE(au.raw_user_meta_data->>'full_name', 'Administrador') as full_name,
     'admin' as role,
-    '{"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true, \"employees\": true}'::jsonb as permissions
+    '{"dashboard": true, "users": true, "stores": true, "services": true, "appointments": true, "employees": true}'::jsonb as permissions
 FROM auth.users au
 WHERE au.email = 'admin@staragendado.com'
 ON CONFLICT (id) DO UPDATE SET
     role = 'admin',
     email = EXCLUDED.email,
     full_name = COALESCE(public.users.full_name, EXCLUDED.full_name),
-    permissions = '{\"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true, \"employees\": true}'::jsonb;
+    permissions = '{"dashboard": true, "users": true, "stores": true, "services": true, "appointments": true, "employees": true}'::jsonb;
 
 -- PASSO 3: Atualizar o user_metadata no auth.users para garantir consistência
 UPDATE auth.users
