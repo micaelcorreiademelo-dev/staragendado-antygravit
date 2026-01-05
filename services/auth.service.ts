@@ -1,25 +1,18 @@
 import { api } from './api';
+import { User, Store } from '../types';
 
 export interface LoginCredentials {
     email: string;
-    password: string;
-}
-
-export interface User {
-    id: string;
-    email: string;
-    full_name: string;
-    role: 'admin' | 'lojista' | 'profissional' | 'cliente';
-    loja_id?: string;
-    permissions?: Record<string, boolean>;
+    password?: string;
 }
 
 export interface AuthResponse {
+    user: User;
     session: {
         access_token: string;
         refresh_token: string;
     };
-    user: User;
+    store?: Store; // Optional store info if shopkeeper
 }
 
 export const authService = {
@@ -36,24 +29,27 @@ export const authService = {
     async logout(): Promise<void> {
         try {
             await api.post('/auth/logout');
+        } catch (error) {
+            console.error('Error logging out:', error);
         } finally {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user');
+            // Make sure these are cleared too if used
+            localStorage.removeItem('user_session');
         }
     },
 
-    async getCurrentUser(): Promise<User> {
-        const { data } = await api.get<User>('/auth/me');
-        localStorage.setItem('user', JSON.stringify(data));
-        return data;
-    },
-
-    getStoredUser(): User | null {
+    getCurrentUser(): User | null {
         const userStr = localStorage.getItem('user');
-        return userStr ? JSON.parse(userStr) : null;
+        if (!userStr) return null;
+        try {
+            return JSON.parse(userStr);
+        } catch {
+            return null;
+        }
     },
 
     isAuthenticated(): boolean {
         return !!localStorage.getItem('auth_token');
-    },
+    }
 };

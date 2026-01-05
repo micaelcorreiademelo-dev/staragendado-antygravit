@@ -1,41 +1,48 @@
 import { api } from './api';
 
+export interface PlanFeature {
+    displayFeatures?: string[];
+    // outras props
+    [key: string]: any;
+}
+
 export interface Plan {
     id: string;
     nome: string;
-    limite_profissionais: number;
-    limite_agendamentos: number;
+    description: string;
+    price: number;
+    limite_profissionais: number; // -1 for unlimited
+    limite_agendamentos: number; // -1 for unlimited
     permite_pagamentos_online: boolean;
     permite_integracao_calendar: boolean;
-    price?: number;
-    description?: string;
-    active?: boolean;
-    highlight?: boolean;
-    features?: any;
-    vigencia_dias?: number;
-    hidden?: boolean;
+    features?: PlanFeature;
+    active: boolean;
     is_default?: boolean;
+    vigencia_dias?: number;
 }
 
 export interface CreatePlanData {
     nome: string;
+    description: string;
+    price: number;
     limite_profissionais: number;
     limite_agendamentos: number;
-    permite_pagamentos_online?: boolean;
-    permite_integracao_calendar?: boolean;
-    price?: number;
-    description?: string;
-    active?: boolean;
-    highlight?: boolean;
+    permite_pagamentos_online: boolean;
+    permite_integracao_calendar: boolean;
     features?: any;
     vigencia_dias?: number;
-    hidden?: boolean;
+    active?: boolean;
     is_default?: boolean;
 }
 
 export const plansService = {
     async getAll(): Promise<Plan[]> {
         const { data } = await api.get<Plan[]>('/planos');
+        return data;
+    },
+
+    async getById(id: string): Promise<Plan> {
+        const { data } = await api.get<Plan>(`/planos/${id}`);
         return data;
     },
 
@@ -49,12 +56,8 @@ export const plansService = {
         return data;
     },
 
-    async delete(id: string): Promise<void> {
-        await api.delete(`/planos/${id}`);
-    },
-
-    async setDefault(id: string): Promise<{ message: string }> {
-        const { data } = await api.put<{ message: string }>(`/planos/${id}/default`, {});
+    async delete(id: string): Promise<{ message: string }> {
+        const { data } = await api.delete<{ message: string }>(`/planos/${id}`);
         return data;
-    }
+    },
 };

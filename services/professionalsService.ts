@@ -1,71 +1,28 @@
 import { api } from './api';
-import { Professional, Permissions, Unavailability, WeekSchedule } from '../types';
-
-export interface CreateProfessionalDTO {
-    nome: string;
-    email: string;
-    phone: string;
-    avatar?: string;
-    loja_id: string;
-    status: 'Active' | 'Inactive';
-    disponibilidade: WeekSchedule;
-    indisponibilidade: Unavailability[];
-    permissoes: Permissions;
-    password?: string;
-}
-
-export interface UpdateProfessionalDTO {
-    nome?: string;
-    email?: string;
-    phone?: string;
-    avatar?: string;
-    status?: 'Active' | 'Inactive';
-    disponibilidade?: WeekSchedule;
-    indisponibilidade?: Unavailability[];
-    permissoes?: Permissions;
-    password?: string;
-}
+import { Professional } from '../types';
 
 export const professionalsService = {
-    getAll: async (lojaId: string): Promise<Professional[]> => {
-        const response = await api.get(`/profissionais?loja_id=${lojaId}`);
-        // Map backend response to frontend type if necessary
-        return response.data.map((p: any) => ({
-            id: p.id,
-            name: p.nome,
-            email: p.email,
-            phone: p.phone,
-            avatar: p.avatar,
-            status: p.status || 'Active',
-            workSchedule: p.disponibilidade,
-            permissions: p.permissoes,
-            unavailability: p.indisponibilidade || [],
-            loja_id: p.loja_id
-        }));
-    },
+  async getAll(): Promise<Professional[]> {
+    const { data } = await api.get<Professional[]>('/profissionais');
+    return data;
+  },
 
-    create: async (data: CreateProfessionalDTO) => {
-        const response = await api.post('/profissionais', data);
-        return response.data;
-    },
+  async getById(id: string): Promise<Professional> {
+    const { data } = await api.get<Professional>(`/profissionais/${id}`);
+    return data;
+  },
 
-    update: async (id: string, data: UpdateProfessionalDTO) => {
-        const response = await api.put(`/profissionais/${id}`, data);
-        return response.data;
-    },
+  async create(professional: Omit<Professional, 'id'>): Promise<Professional> {
+    const { data } = await api.post<Professional>('/profissionais', professional);
+    return data;
+  },
 
-    delete: async (id: string) => {
-        const response = await api.delete(`/profissionais/${id}`);
-        return response.data;
-    },
+  async update(id: string, professional: Partial<Professional>): Promise<Professional> {
+    const { data } = await api.put<Professional>(`/profissionais/${id}`, professional);
+    return data;
+  },
 
-    updatePermissions: async (id: string, permissions: Permissions) => {
-        const response = await api.patch(`/profissionais/${id}/permissoes`, { permissoes: permissions });
-        return response.data;
-    },
-
-    updateUnavailability: async (id: string, unavailability: Unavailability[]) => {
-        const response = await api.patch(`/profissionais/${id}/indisponibilidade`, { indisponibilidade: unavailability });
-        return response.data;
-    }
+  async delete(id: string): Promise<void> {
+    await api.delete(`/profissionais/${id}`);
+  }
 };

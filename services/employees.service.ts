@@ -4,18 +4,20 @@ export interface Employee {
     id: string;
     full_name: string;
     email: string;
-    phone?: string;
-    role: 'admin'; // Apenas admin é válido no enum user_role
-    permissions: Record<string, boolean>;
+    role: 'admin' | 'support' | 'sales';
+    status: 'active' | 'inactive';
+    last_access?: string;
     created_at: string;
+    permissions?: any;
+    password?: string; // Optional for creation
 }
 
-export interface CreateEmployeeData {
+export interface CreateEmployeeDTO {
     full_name: string;
     email: string;
-    password?: string; // Opcional na edição
-    permissions: Record<string, boolean>;
-    role?: 'admin';
+    password?: string;
+    role: 'admin' | 'support' | 'sales';
+    permissions: any;
 }
 
 export const employeesService = {
@@ -24,18 +26,16 @@ export const employeesService = {
         return data;
     },
 
-    async create(data: CreateEmployeeData): Promise<{ id: string }> {
-        const response = await api.post<{ id: string }>('/employees', data);
-        return response.data;
+    async create(employee: CreateEmployeeDTO): Promise<{ id: string }> {
+        const { data } = await api.post<{ id: string }>('/employees', employee);
+        return data;
     },
 
-    async update(id: string, data: Partial<CreateEmployeeData>): Promise<{ message: string }> {
-        const response = await api.put<{ message: string }>(`/employees/${id}`, data);
-        return response.data;
+    async update(id: string, employee: Partial<Employee>): Promise<void> {
+        await api.put(`/employees/${id}`, employee);
     },
 
-    async delete(id: string): Promise<{ message: string }> {
-        const response = await api.delete<{ message: string }>(`/employees/${id}`);
-        return response.data;
+    async delete(id: string): Promise<void> {
+        await api.delete(`/employees/${id}`);
     }
 };

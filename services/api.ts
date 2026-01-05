@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
-
+// Create a configured axios instance
 export const api = axios.create({
-    baseURL: API_URL,
+    baseURL: 'http://localhost:3000', // Adjust if your backend is elsewhere
     headers: {
-        'Content-Type': 'application/json',
-    },
+        'Content-Type': 'application/json'
+    }
 });
 
-// Request interceptor to add auth token
+// Add a request interceptor to attach the token
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('auth_token');
@@ -18,12 +17,10 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Response interceptor for error handling
+// Add a response interceptor to handle errors globally
 api.interceptors.response.use(
     (response) => response,
     (error) => {

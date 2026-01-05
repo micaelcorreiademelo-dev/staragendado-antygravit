@@ -1,44 +1,20 @@
 import { api } from './api';
-
-export interface Appointment {
-    id: string;
-    loja_id: string;
-    cliente_nome: string;
-    cliente_telefone?: string;
-    profissional_id: string;
-    servico_id: string;
-    data: string;
-    hora: string;
-    status: 'confirmado' | 'cancelado' | 'pendente';
-}
+import { Appointment } from '../types';
 
 export interface CreateAppointmentDTO {
-    loja_id: string;
-    cliente_nome: string;
-    cliente_telefone?: string;
-    profissional_id: string;
-    servico_id: string;
-    data: string;
-    hora: string;
-}
-
-export interface AppointmentFilters {
-    loja_id?: string;
-    profissional_id?: string;
-    status?: 'confirmado' | 'cancelado' | 'pendente';
-    data?: string;
+    date: string; // ISO string or YYYY-MM-DD HH:mm
+    clientId?: string; // If registered client
+    clientName: string;
+    clientPhone?: string;
+    serviceId: string;
+    professionalId: string;
+    notes?: string;
+    status: 'agendado' | 'concluido' | 'cancelado' | 'pendente';
 }
 
 export const appointmentsService = {
-    async getAll(filters?: AppointmentFilters): Promise<Appointment[]> {
-        const params = new URLSearchParams();
-        if (filters) {
-            if (filters.loja_id) params.append('loja_id', filters.loja_id);
-            if (filters.profissional_id) params.append('profissional_id', filters.profissional_id);
-            if (filters.status) params.append('status', filters.status);
-            if (filters.data) params.append('data', filters.data);
-        }
-        const { data } = await api.get<Appointment[]>(`/agendamentos?${params.toString()}`);
+    async getAll(filters?: { start?: string; end?: string; professionalId?: string }): Promise<Appointment[]> {
+        const { data } = await api.get<Appointment[]>('/agendamentos', { params: filters });
         return data;
     },
 
