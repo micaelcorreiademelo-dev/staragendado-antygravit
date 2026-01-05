@@ -45,7 +45,7 @@ INSERT INTO auth.users (
     NOW(),
     NOW(),
     NOW(),
-    '{"provider\":\"email\",\"providers\":[\"email\"]}',
+    '{"provider":"email","providers":["email"]}',
     '{}',
     NOW(),
     NOW(),
