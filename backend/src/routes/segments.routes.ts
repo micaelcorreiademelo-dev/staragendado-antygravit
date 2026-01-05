@@ -15,7 +15,7 @@ export async function segmentsRoutes(app: FastifyInstance) {
                     id: z.string(),
                     nome: z.string(),
                     active: z.boolean().nullable().optional(),
-                })),
+                })),\
                 500: z.object({ error: z.string() }),
             },
         },

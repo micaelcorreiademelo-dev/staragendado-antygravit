@@ -19,7 +19,7 @@ export async function servicesRoutes(app: FastifyInstance) {
                     preco: z.number(),
                     duracao_minutos: z.number(),
                     loja_id: z.string(),
-                })),
+                })),\
                 500: z.object({ error: z.string() }),
             },
         },

@@ -25,7 +25,7 @@ export async function storesRoutes(app: FastifyInstance) {
                     created_at: z.string(),
                     plan_expires_at: z.string().nullable().optional(),
                     segmento_id: z.string().nullable().optional(),
-                })),
+                })),\
                 500: z.object({ error: z.string() }),
             },
         },
