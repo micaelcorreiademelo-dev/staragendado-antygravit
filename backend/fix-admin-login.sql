@@ -31,7 +31,7 @@ WHERE role = 'admin' OR email LIKE '%admin%';
 -- 4. Atualizar o role de todos os admins existentes
 UPDATE public.users 
 SET role = 'admin',
-    permissions = COALESCE(permissions, '{"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true}'::jsonb)
+    permissions = COALESCE(permissions, '{\"dashboard\": true, \"users\": true, \"stores\": true, \"services\": true, \"appointments\": true}'::jsonb)
 WHERE email LIKE '%admin%' OR id IN (
     SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'
 );
